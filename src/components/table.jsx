@@ -6,6 +6,7 @@ import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
+import exportToCSV from "../utils/export2CSV"
 
 export default function GeoTable() {
 
@@ -15,6 +16,8 @@ export default function GeoTable() {
     key: null,
     direction: "asc"
   })
+  const [search, setSearch] = useState("")
+
   const handleSort = (columnKey) => {
     let direction = "asc"
 
@@ -27,8 +30,8 @@ export default function GeoTable() {
       direction
     })
   }
-  const sortedRows = [...rows]
 
+  const sortedRows = [...rows]
   if (sortConfig.key) {
     sortedRows.sort((a, b) => {
       const aValue = a[sortConfig.key]
@@ -39,6 +42,19 @@ export default function GeoTable() {
       return 0
     })
   }
+
+  // para filtrar las celdas dependiendo del buscador
+  const filteredRows = sortedRows.filter(row =>
+    Object.values(row).some(value =>
+      String(value ?? "").toLowerCase().includes(search.toLowerCase())
+    )
+  )
+
+  // Para escribir en mayúsculas la primera las cabeceras de las tablas
+  const toTitleCase = (str) =>
+    str
+      .replace(/_/g, " ")
+      .replace(/\b\w/g, char => char.toUpperCase())
 
   useEffect(() => {
     fetch(`/${dataset}.json`)
@@ -84,6 +100,13 @@ export default function GeoTable() {
         <option value="stations">Estaciones</option>
       </select>
 
+      <input
+        type="text"
+        placeholder="Buscar..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
+
       <TableContainer component={Paper}>
         <Table size="small">
 
@@ -95,14 +118,14 @@ export default function GeoTable() {
                   onClick={() => handleSort(col.key)}
                   style={{ cursor: "pointer" }}
                 >
-                  {col.label}
+                  {toTitleCase(col.label)}
                 </TableCell>
               ))}
             </TableRow>
           </TableHead>
 
           <TableBody>
-            {sortedRows.map((row, i) => (
+            {filteredRows.map((row, i) => (
               <TableRow key={i}>
                 {columns.map(col => (
                   <TableCell key={col.key}>
@@ -115,6 +138,10 @@ export default function GeoTable() {
 
         </Table>
       </TableContainer>
+
+      <button onClick={() => exportToCSV(filteredRows, columns, dataset, search)}>
+        Exportar CSV
+      </button>
 
     </div>
   )
