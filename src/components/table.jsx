@@ -19,6 +19,7 @@ export default function GeoTable() {
     direction: "asc"
   })
   const [search, setSearch] = useState("")
+  const [newColumn, setNewColumn] = useState("")
 
   const handleSort = (columnKey) => {
     let direction = "asc"
@@ -66,6 +67,7 @@ export default function GeoTable() {
         const tableRows = data.features
           .filter(f => f.properties && Object.keys(f.properties).length > 0)
           .map(f => {
+
             const cleanedProps = {}
 
             Object.entries(f.properties).forEach(([key, value]) => {
@@ -90,6 +92,8 @@ export default function GeoTable() {
     }))
     : []
 
+  // Evitar que se puedan modificar los campos "id"
+  const lockedFields = ["id", "gid", "objectid"]
   function handleCellChange(rowIndex, columnKey, value) {
     const updatedRows = [...rows]
 
@@ -103,18 +107,35 @@ export default function GeoTable() {
 
     console.log("Guardando cambios", rows)
 
-  await fetch(`${API_URL}/api/update-table`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      dataset,
-      rows
+    await fetch(`${API_URL}/api/update-table`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        dataset,
+        rows
+      })
     })
-  })
 
-}
+  }
+
+  // Para añadir columnas a la tabla
+  function addColumn(columnName) {
+
+    const safeName = columnName.trim().toLowerCase().replace(/\s+/g, "_")
+    if (!safeName) return
+    if (rows.length && safeName in rows[0]) {
+      alert("La columna ya existe")
+      return
+    }
+    const updatedRows = rows.map(row => ({
+      ...row,
+      [safeName]: ""
+    }))
+
+    setRows(updatedRows)
+  }
 
   return (
     <div>
@@ -134,6 +155,17 @@ export default function GeoTable() {
         value={search}
         onChange={(e) => setSearch(e.target.value)}
       />
+
+      <input
+        type="text"
+        placeholder="Nuevo campo..."
+        value={newColumn}
+        onChange={(e) => setNewColumn(e.target.value)}
+      />
+
+      <button onClick={() => addColumn(newColumn)}>
+        Añadir campo
+      </button>
 
       <TableContainer component={Paper}>
         <Table size="small">
@@ -157,7 +189,7 @@ export default function GeoTable() {
               <TableRow key={i}>
                 {columns.map(col => (
                   <TableCell key={col.key}>
-                    {isAdmin ? (
+                    {isAdmin && !lockedFields.includes(col.key) ? (
                       <input
                         value={row[col.key]}
                         onChange={(e) =>

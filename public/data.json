@@ -1,0 +1,31 @@
+{
+    "nameTable": [
+        {
+            "ColumnName1": "tipoDato",
+            "ColumnName2": "tipoDato",
+            "ColumnName3": "tipoDato",
+            "ColumnName4": "tipoDato"
+        },
+        {
+            "id": 1,
+            "ColumnName1": "name",
+            "ColumnName2": "valor",
+            "ColumnName3": "valor",
+            "ColumnName4": "valor"
+        },
+        {
+            "id": 2,
+            "ColumnName": "valor",
+            "ColumnName2": "valor",
+            "ColumnName3": "valor",
+            "ColumnName4": "valor"
+        },
+        {
+            "id": 3,
+            "ColumnName": "valor",
+            "ColumnName2": "valor",
+            "ColumnName3": "valor",
+            "ColumnName4": "valor"
+        }
+    ]
+}
