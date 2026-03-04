@@ -1,0 +1,131 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.011215462,
+          40.710384257
+        ]
+      },
+      "properties": {
+        "name": "Cortlandt St",
+        "color": "YELLOW"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.013587918,
+          40.707949836
+        ]
+      },
+      "properties": {
+        "name": "Rector St",
+        "color": "RED"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.013926,
+          40.701324999
+        ]
+      },
+      "properties": {
+        "name": "South Ferry",
+        "color": "RED"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -73.92991767,
+          40.813076814
+        ]
+      },
+      "properties": {
+        "name": "138th St",
+        "color": "GREEN"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -73.927406498,
+          40.818347666
+        ]
+      },
+      "properties": {
+        "name": "149th St",
+        "color": "GREEN"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -73.927270931,
+          40.818553397
+        ]
+      },
+      "properties": {
+        "name": "149th St",
+        "color": "RED-GREEN"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -73.925847068,
+          40.827963431
+        ]
+      },
+      "properties": {
+        "name": "161st St",
+        "color": "GREEN-ORANGE"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -73.91768024,
+          40.834513463
+        ]
+      },
+      "properties": {
+        "name": "167th St",
+        "color": "ORANGE"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -73.921295602,
+          40.835691067
+        ]
+      },
+      "properties": {
+        "name": "167th St",
+        "color": "GREEN"
+      }
+    }
+]
+}

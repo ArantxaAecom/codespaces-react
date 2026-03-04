@@ -1,0 +1,171 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "MultiLineString",
+                "coordinates": [
+                    [
+                        [
+                            -73.974541,
+                            40.582351
+                        ],
+                        [
+                            -73.973203,
+                            40.582724
+                        ],
+                        [
+                            -73.970587,
+                            40.583218
+                        ],
+                        [
+                            -73.9692139,
+                            40.583531
+                        ],
+                        [
+                            -73.966894,
+                            40.583348
+                        ],
+                        [
+                            -73.96536,
+                            40.583278
+                        ]
+                    ]
+                ]
+            },
+            "properties": {
+                "name": "Shore Pky S"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "MultiLineString",
+                "coordinates": [
+                    [
+                        [
+                            -73.9745373,
+                            40.6911454
+                        ],
+                        [
+                            -73.9743084,
+                            40.6912406
+                        ],
+                        [
+                            -73.974214,
+                            40.6912797
+                        ],
+                        [
+                            -73.9741024,
+                            40.6913578
+                        ],
+                        [
+                            -73.9740166,
+                            40.6914293
+                        ],
+                        [
+                            -73.9739479,
+                            40.691566
+                        ]
+                    ]
+                ]
+            },
+            "properties": {}
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "MultiLineString",
+                "coordinates": [
+                    [
+                        [
+                            -73.974515,
+                            40.611257
+                        ],
+                        [
+                            -73.973484,
+                            40.611371
+                        ],
+                        [
+                            -73.972398,
+                            40.611491
+                        ],
+                        [
+                            -73.971379,
+                            40.611602
+                        ]
+                    ]
+                ]
+            },
+            "properties": {
+                "name": "Avenue O"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "MultiLineString",
+                "coordinates": [
+                    [
+                        [
+                            -73.974514,
+                            40.628025
+                        ],
+                        [
+                            -73.972646,
+                            40.628274
+                        ]
+                    ]
+                ]
+            },
+            "properties": {
+                "name": "Walsh Ct"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "MultiLineString",
+                "coordinates": [
+                    [
+                        [
+                            -73.974517,
+                            40.737183
+                        ],
+                        [
+                            -73.97386,
+                            40.737795
+                        ]
+                    ]
+                ]
+            },
+            "properties": {}
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "MultiLineString",
+                "coordinates": [
+                    [
+                        [
+                            -73.97441,
+                            40.585758
+                        ],
+                        [
+                            -73.972204,
+                            40.586001
+                        ],
+                        [
+                            -73.971278,
+                            40.586101
+                        ]
+                    ]
+                ]
+            },
+            "properties": {
+                "name": "Avenue Z"
+            }
+        }
+    ]
+}

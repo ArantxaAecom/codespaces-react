@@ -9,26 +9,8 @@ import Paper from '@mui/material/Paper'
 
 export default function GeoTable() {
 
+  const [dataset, setDataset] = useState("barrios")
   const [rows, setRows] = useState([])
-
-  const columns = rows.length
-    ? Object.keys(rows[0]).map(key => ({
-      key,
-      label: key
-    }))
-    : []
-
-  useEffect(() => {
-    fetch("/test.json")
-      .then(res => res.json())
-      .then(data => {
-        const tableRows = data.features.map(f => ({
-          ...f.properties
-        }))
-        setRows(tableRows)
-      })
-  }, [])
-
   const [sortConfig, setSortConfig] = useState({
     key: null,
     direction: "asc"
@@ -58,38 +40,82 @@ export default function GeoTable() {
     })
   }
 
+  useEffect(() => {
+    fetch(`/${dataset}.json`)
+      .then(res => res.json())
+      .then(data => {
+
+        const tableRows = data.features
+          .filter(f => f.properties && Object.keys(f.properties).length > 0)
+          .map(f => {
+            const cleanedProps = {}
+
+            Object.entries(f.properties).forEach(([key, value]) => {
+              cleanedProps[key] =
+                value === null || value === undefined || value === ""
+                  ? "sin nombre"
+                  : value
+            })
+
+            return cleanedProps
+          })
+
+        setRows(tableRows)
+
+      })
+  }, [dataset])
+
+  const columns = rows.length
+    ? [...new Set(rows.flatMap(row => Object.keys(row)))].map(key => ({
+      key,
+      label: key
+    }))
+    : []
 
   return (
-    <TableContainer component={Paper}>
-      <Table size="small">
+    <div>
 
-        <TableHead>
-          <TableRow>
-            {columns.map(col => (
-              <TableCell
-                key={col.key}
-                onClick={() => handleSort(col.key)}
-                style={{ cursor: "pointer" }}
-              >
-                {col.label}
-              </TableCell>
-            ))}
-          </TableRow>
-        </TableHead>
+      <select
+        value={dataset}
+        onChange={(e) => setDataset(e.target.value)}
+      >
+        <option value="test">Barrios</option>
+        <option value="streets">Calles</option>
+        <option value="stations">Estaciones</option>
+      </select>
 
-        <TableBody>
-          {sortedRows.map((row, i) => (
-            <TableRow key={i}>
+      <TableContainer component={Paper}>
+        <Table size="small">
+
+          <TableHead>
+            <TableRow>
               {columns.map(col => (
-                <TableCell key={col.key}>
-                  {row[col.key]}
+                <TableCell
+                  key={col.key}
+                  onClick={() => handleSort(col.key)}
+                  style={{ cursor: "pointer" }}
+                >
+                  {col.label}
                 </TableCell>
               ))}
             </TableRow>
-          ))}
-        </TableBody>
+          </TableHead>
 
-      </Table>
-    </TableContainer>
+          <TableBody>
+            {sortedRows.map((row, i) => (
+              <TableRow key={i}>
+                {columns.map(col => (
+                  <TableCell key={col.key}>
+                    {row[col.key]}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+
+        </Table>
+      </TableContainer>
+
+    </div>
   )
 }
