@@ -10,6 +10,8 @@ import exportToCSV from "../utils/export2CSV"
 
 export default function GeoTable() {
 
+  // Para la edición de la tabla, si es admin
+  const isAdmin = true
   const [dataset, setDataset] = useState("barrios")
   const [rows, setRows] = useState([])
   const [sortConfig, setSortConfig] = useState({
@@ -88,6 +90,32 @@ export default function GeoTable() {
     }))
     : []
 
+  function handleCellChange(rowIndex, columnKey, value) {
+    const updatedRows = [...rows]
+
+    updatedRows[rowIndex][columnKey] = value
+
+    setRows(updatedRows)
+  }
+  // Llamada al backend para persistir los cambios hechos en la tabla
+  async function saveChanges() {
+    const API_URL = window.location.origin.replace("3000", "5000")
+
+    console.log("Guardando cambios", rows)
+
+  await fetch(`${API_URL}/api/update-table`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      dataset,
+      rows
+    })
+  })
+
+}
+
   return (
     <div>
 
@@ -129,7 +157,16 @@ export default function GeoTable() {
               <TableRow key={i}>
                 {columns.map(col => (
                   <TableCell key={col.key}>
-                    {row[col.key]}
+                    {isAdmin ? (
+                      <input
+                        value={row[col.key]}
+                        onChange={(e) =>
+                          handleCellChange(i, col.key, e.target.value)
+                        }
+                      />
+                    ) : (
+                      row[col.key]
+                    )}
                   </TableCell>
                 ))}
               </TableRow>
@@ -138,6 +175,11 @@ export default function GeoTable() {
 
         </Table>
       </TableContainer>
+      {isAdmin && (
+        <button onClick={saveChanges}>
+          Guardar cambios
+        </button>
+      )}
 
       <button onClick={() => exportToCSV(filteredRows, columns, dataset, search)}>
         Exportar CSV
