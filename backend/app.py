@@ -20,7 +20,7 @@ def update_table():
 
     print("dataset:", dataset)
 
-    file_path = f"../public/{dataset}.json"
+    file_path = f"../public/{dataset}"
 
     with open(file_path, "r") as f:
         geojson = json.load(f)

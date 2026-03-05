@@ -18,7 +18,18 @@
         "id": 1,
         "gid": 1,
         "name": "Shore Pky S",
-        "type": "residential"
+        "type": "residential",
+        "geometry": {
+          "type": "MultiLineString",
+          "coordinates": [
+            [
+              [
+                -73.974541,
+                40.582351
+              ]
+            ]
+          ]
+        }
       }
     },
     {
@@ -37,7 +48,18 @@
       "properties": {
         "id": 2,
         "gid": 2,
-        "type": "footway"
+        "type": "footway",
+        "geometry": {
+          "type": "MultiLineString",
+          "coordinates": [
+            [
+              [
+                -73.9745373,
+                40.6911454
+              ]
+            ]
+          ]
+        }
       }
     },
     {
@@ -61,7 +83,22 @@
         "id": 3,
         "gid": 3,
         "name": "Avenue O",
-        "type": "residential"
+        "type": "residential",
+        "geometry": {
+          "type": "MultiLineString",
+          "coordinates": [
+            [
+              [
+                -73.974515,
+                40.611257
+              ],
+              [
+                -73.973484,
+                40.611371
+              ]
+            ]
+          ]
+        }
       }
     },
     {
@@ -85,7 +122,22 @@
         "id": 4,
         "gid": 4,
         "name": "Walsh Ct",
-        "type": "residential"
+        "type": "residential",
+        "geometry": {
+          "type": "MultiLineString",
+          "coordinates": [
+            [
+              [
+                -73.974514,
+                40.628025
+              ],
+              [
+                -73.972646,
+                40.628274
+              ]
+            ]
+          ]
+        }
       }
     },
     {
@@ -108,7 +160,23 @@
       "properties": {
         "id": 5,
         "gid": 5,
-        "type": "motorway_link"
+        "type": "motorway_link",
+        "geometry": {
+          "type": "MultiLineString",
+          "coordinates": [
+            [
+              [
+                -73.974517,
+                40.737183
+              ],
+              [
+                -73.97386,
+                40.737795
+              ]
+            ]
+          ]
+        },
+        "name": "AECOM"
       }
     },
     {
@@ -168,7 +236,58 @@
         "id": 6,
         "gid": 6,
         "name": "Avenue Z",
-        "type": "residential"
+        "type": "residential",
+        "geometry": {
+          "type": "MultiLineString",
+          "coordinates": [
+            [
+              [
+                -73.94457,
+                40.589041
+              ],
+              [
+                -73.943609,
+                40.5891469
+              ],
+              [
+                -73.94268,
+                40.589247
+              ],
+              [
+                -73.941754,
+                40.589349
+              ],
+              [
+                -73.940835,
+                40.58945
+              ],
+              [
+                -73.939796,
+                40.589565
+              ],
+              [
+                -73.938837,
+                40.589671
+              ],
+              [
+                -73.93791,
+                40.58977
+              ],
+              [
+                -73.936985,
+                40.589871
+              ],
+              [
+                -73.936061,
+                40.58997
+              ],
+              [
+                -73.935091,
+                40.590077
+              ]
+            ]
+          ]
+        }
       }
     },
     {
@@ -192,7 +311,22 @@
         "id": 7,
         "gid": 7,
         "name": "Dank Ct",
-        "type": "residential"
+        "type": "residential",
+        "geometry": {
+          "type": "MultiLineString",
+          "coordinates": [
+            [
+              [
+                -73.974368,
+                40.5865
+              ],
+              [
+                -73.97234,
+                40.586718
+              ]
+            ]
+          ]
+        }
       }
     },
     {
@@ -224,7 +358,30 @@
         "id": 8,
         "gid": 8,
         "name": "Cumberland Walk",
-        "type": "footway"
+        "type": "footway",
+        "geometry": {
+          "type": "MultiLineString",
+          "coordinates": [
+            [
+              [
+                -73.9743419,
+                40.694271
+              ],
+              [
+                -73.973928,
+                40.694232
+              ],
+              [
+                -73.973754,
+                40.693791
+              ],
+              [
+                -73.973559,
+                40.693262
+              ]
+            ]
+          ]
+        }
       }
     },
     {
@@ -252,7 +409,26 @@
         "id": 9,
         "gid": 9,
         "name": "Cumberland Walk",
-        "type": "footway"
+        "type": "footway",
+        "geometry": {
+          "type": "MultiLineString",
+          "coordinates": [
+            [
+              [
+                -73.974158,
+                40.696041
+              ],
+              [
+                -73.974194,
+                40.695852
+              ],
+              [
+                -73.9743419,
+                40.694271
+              ]
+            ]
+          ]
+        }
       }
     },
     {
@@ -287,7 +463,34 @@
       "properties": {
         "id": 10,
         "gid": 10,
-        "type": "residential"
+        "type": "residential",
+        "geometry": {
+          "type": "MultiLineString",
+          "coordinates": [
+            [
+              [
+                -73.974337,
+                40.74021
+              ],
+              [
+                -73.974289,
+                40.74026
+              ],
+              [
+                -73.974257,
+                40.740318
+              ],
+              [
+                -73.974244,
+                40.740364
+              ],
+              [
+                -73.974243,
+                40.74041
+              ]
+            ]
+          ]
+        }
       }
     },
     {
@@ -311,7 +514,22 @@
         "id": 11,
         "gid": 11,
         "name": "Cobek Ct",
-        "type": "residential"
+        "type": "residential",
+        "geometry": {
+          "type": "MultiLineString",
+          "coordinates": [
+            [
+              [
+                -73.974326,
+                40.5872
+              ],
+              [
+                -73.972466,
+                40.5874
+              ]
+            ]
+          ]
+        }
       }
     }
   ]

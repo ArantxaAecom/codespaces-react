@@ -11,7 +11,7 @@
         ]
       },
       "properties": {
-        "id": 376.0,
+        "id": 376,
         "gid": 1,
         "name": "Cortlandt St",
         "color": "YELLOW",
@@ -21,7 +21,14 @@
         "cross_st": "Church St",
         "objectid": 1,
         "long_name": "Cortlandt St (R,W) Manhattan",
-        "transfers": "R,W"
+        "transfers": "R,W",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            -74.011215462,
+            40.710384257
+          ]
+        }
       }
     },
     {
@@ -34,7 +41,7 @@
         ]
       },
       "properties": {
-        "id": 2.0,
+        "id": 2,
         "gid": 2,
         "name": "Rector St",
         "color": "RED",
@@ -43,7 +50,15 @@
         "borough": "Manhattan",
         "objectid": 2,
         "long_name": "Rector St (1) Manhattan",
-        "transfers": "1"
+        "transfers": "1",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            -74.013587918,
+            40.707949836
+          ]
+        },
+        "cross_st": "my street"
       }
     },
     {
@@ -56,16 +71,23 @@
         ]
       },
       "properties": {
-        "id": 1.0,
+        "id": 1,
         "gid": 3,
         "name": "South Ferry",
         "color": "RED",
         "label": "South Ferry (1)",
-        "routes": "1",
+        "routes": "102",
         "borough": "Manhattan",
         "objectid": 3,
         "long_name": "South Ferry (1) Manhattan",
-        "transfers": "1"
+        "transfers": "1",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            -74.013926,
+            40.701324999
+          ]
+        }
       }
     }
   ]

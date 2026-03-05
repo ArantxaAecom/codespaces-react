@@ -1,21 +1,52 @@
+function parseCSV(text) {
+
+  const lines = text.trim().split("\n")
+  const headers = lines[0].split(",").map(h => h.trim())
+
+  return lines.slice(1).map(line => {
+
+    const values = line.split(",")
+
+    const row = {}
+
+    headers.forEach((header, i) => {
+      row[header] = values[i]
+        ?.replace(/"/g, "")
+        .replace(/\r/g, "")
+        .trim()
+    })
+
+    return row
+  })
+}
+
 export function normalizeData(data) {
 
-  // GeoJSON
-  if (data.type === "FeatureCollection" && data.features) {
-    return data.features.map(f => ({
-      ...f.properties
-    }))
+  if (data.startsWith("<!DOCTYPE")) {
+    console.error("Se ha recibido HTML en vez de datos")
+    return []
   }
 
-  // CSV parseado (array de objetos)
-  if (Array.isArray(data) && typeof data[0] === "object") {
-    return data
+  try {
+
+    const parsed = JSON.parse(data)
+
+    // GeoJSON
+    if (parsed.type === "FeatureCollection") {
+      return parsed.features.map(f => ({
+        ...f.properties,
+        geometry: f.geometry
+      }))
+    }
+
+    // JSON normal
+    if (Array.isArray(parsed)) {
+      return parsed
+    }
+
+  } catch {
+    return parseCSV(data)
   }
 
-  // respuesta típica de API SQL
-  if (data.rows && Array.isArray(data.rows)) {
-    return data.rows
-  }
-
-  throw new Error("Formato de datos no reconocido")
+  return []
 }

@@ -6,6 +6,7 @@ import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
+import TableSortLabel from '@mui/material/TableSortLabel'
 import exportToCSV from "../utils/export2CSV"
 import { normalizeData } from "../utils/dataAdapter"
 
@@ -13,7 +14,7 @@ export default function GeoTable() {
 
   // Para la edición de la tabla, si es admin
   const isAdmin = true
-  const [dataset, setDataset] = useState("barrios")
+  const [dataset, setDataset] = useState("test.json")
   const [rows, setRows] = useState([])
   const [sortConfig, setSortConfig] = useState({
     key: null,
@@ -21,6 +22,21 @@ export default function GeoTable() {
   })
   const [search, setSearch] = useState("")
   const [newColumn, setNewColumn] = useState("")
+  // mensaje de guardado con éxito y pedir exportar
+  const [message, setMessage] = useState("")
+  const isCSV = dataset.endsWith(".csv")
+  // Evitar que el mensaje se quede permanente
+  useEffect(() => {
+
+    if (!message) return
+
+    const timer = setTimeout(() => {
+      setMessage("")
+    }, 3000)
+
+    return () => clearTimeout(timer)
+
+  }, [message])
 
   const handleSort = (columnKey) => {
     let direction = "asc"
@@ -61,8 +77,8 @@ export default function GeoTable() {
       .replace(/\b\w/g, char => char.toUpperCase())
 
   useEffect(() => {
-    fetch(`/api/${dataset}`)
-      .then(res => res.json())
+    fetch(`/${dataset}`)
+      .then(res => res.text())
       .then(data => {
         const tableRows = normalizeData(data)
         setRows(tableRows)
@@ -77,6 +93,7 @@ export default function GeoTable() {
     : []
 
   // Evitar que se puedan modificar los campos "id"
+  const lockedFields = ["id", "gid", "objectid"]
   function handleCellChange(rowId, columnKey, value) {
     const updatedRows = rows.map(row =>
       row.gid === rowId
@@ -88,20 +105,29 @@ export default function GeoTable() {
   }
   // Llamada al backend para persistir los cambios hechos en la tabla
   async function saveChanges() {
+
     const API_URL = window.location.origin.replace("3000", "5000")
 
-    console.log("Guardando cambios", rows)
+    try {
 
-    await fetch(`${API_URL}/api/update-table`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        dataset,
-        rows
+      const res = await fetch(`${API_URL}/api/update-table`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          dataset,
+          rows
+        })
       })
-    })
+
+      if (res.ok) {
+        setMessage("Cambios guardados correctamente")
+      }
+
+    } catch (error) {
+      setMessage("Error al guardar los cambios")
+    }
 
   }
 
@@ -129,10 +155,22 @@ export default function GeoTable() {
         value={dataset}
         onChange={(e) => setDataset(e.target.value)}
       >
-        <option value="test">Barrios</option>
-        <option value="streets">Calles</option>
-        <option value="stations">Estaciones</option>
+        <option value="test.json">Barrios</option>
+        <option value="streets.json">Calles</option>
+        <option value="stations.json">Estaciones</option>
+        <option value="streets_2026-03-05.csv">Calles CSV export</option>
       </select>
+
+      {isCSV && (
+        <div style={{ background: "#fff3cd", padding: "8px", marginBottom: "10px" }}>
+          Este dataset proviene de un CSV. Para guardar cambios exporta el archivo actualizado.
+        </div>
+      )}
+      {message && (
+        <div style={{ background: "#d4edda", padding: "8px", marginTop: "10px" }}>
+          {message}
+        </div>
+      )}
 
       <input
         type="text"
@@ -158,12 +196,14 @@ export default function GeoTable() {
           <TableHead>
             <TableRow>
               {columns.map(col => (
-                <TableCell
-                  key={col.key}
-                  onClick={() => handleSort(col.key)}
-                  style={{ cursor: "pointer" }}
-                >
-                  {toTitleCase(col.label)}
+                <TableCell key={col.key}>
+                  <TableSortLabel
+                    active={sortConfig.key === col.key}
+                    direction={sortConfig.key === col.key ? sortConfig.direction : "asc"}
+                    onClick={() => handleSort(col.key)}
+                  >
+                    {toTitleCase(col.label)}
+                  </TableSortLabel>
                 </TableCell>
               ))}
             </TableRow>
@@ -178,7 +218,7 @@ export default function GeoTable() {
                       <input
                         value={row[col.key]}
                         onChange={(e) =>
-                          handleCellChange(i, col.key, e.target.value)
+                          handleCellChange(row.gid, col.key, e.target.value)
                         }
                       />
                     ) : (
