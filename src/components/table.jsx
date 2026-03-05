@@ -8,11 +8,14 @@ import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
 import TableSortLabel from '@mui/material/TableSortLabel'
 import exportToCSV from "../utils/export2CSV"
-import { normalizeData } from "../utils/dataAdapter"
+import { loadDataset } from "../services/dataLoader"
+import { getColumns } from "../utils/tableColumns"
+import useGeoTable from "../hooks/useGeoTable"
+import useAutoMessage from "../hooks/useAutoMessage"
 
 export default function GeoTable() {
 
-  // Para la edición de la tabla, si es admin
+  // Para manejar la edición de la tabla, si es admin
   const isAdmin = true
   const [dataset, setDataset] = useState("test.json")
   const [rows, setRows] = useState([])
@@ -25,20 +28,15 @@ export default function GeoTable() {
   // mensaje de guardado con éxito y pedir exportar
   const [message, setMessage] = useState("")
   const isCSV = dataset.endsWith(".csv")
-  // Evitar que el mensaje se quede permanente
+
+  useAutoMessage(message, setMessage)
+
   useEffect(() => {
-
-    if (!message) return
-
-    const timer = setTimeout(() => {
-      setMessage("")
-    }, 3000)
-
-    return () => clearTimeout(timer)
-
-  }, [message])
+    loadDataset(dataset).then(setRows)
+  }, [dataset])
 
   const handleSort = (columnKey) => {
+
     let direction = "asc"
 
     if (sortConfig.key === columnKey && sortConfig.direction === "asc") {
@@ -50,51 +48,8 @@ export default function GeoTable() {
       direction
     })
   }
-
-  const sortedRows = [...rows]
-  if (sortConfig.key) {
-    sortedRows.sort((a, b) => {
-      const aValue = a[sortConfig.key]
-      const bValue = b[sortConfig.key]
-
-      if (aValue < bValue) return sortConfig.direction === "asc" ? -1 : 1
-      if (aValue > bValue) return sortConfig.direction === "asc" ? 1 : -1
-      return 0
-    })
-  }
-
-  // para filtrar las celdas dependiendo del buscador
-  const filteredRows = sortedRows.filter(row =>
-    Object.values(row).some(value =>
-      String(value ?? "").toLowerCase().includes(search.toLowerCase())
-    )
-  )
-
-  // Para escribir en mayúsculas la primera las cabeceras de las tablas
-  const toTitleCase = (str) =>
-    str
-      .replace(/_/g, " ")
-      .replace(/\b\w/g, char => char.toUpperCase())
-
-  useEffect(() => {
-    fetch(`/${dataset}`)
-      .then(res => res.text())
-      .then(data => {
-        const tableRows = normalizeData(data)
-        setRows(tableRows)
-      })
-  }, [dataset])
-
-  const columns = rows.length
-    ? [...new Set(rows.flatMap(row => Object.keys(row)))].map(key => ({
-      key,
-      label: key
-    }))
-    : []
-
-  // Evitar que se puedan modificar los campos "id"
-  const lockedFields = ["id", "gid", "objectid"]
   function handleCellChange(rowId, columnKey, value) {
+
     const updatedRows = rows.map(row =>
       row.gid === rowId
         ? { ...row, [columnKey]: value }
@@ -103,7 +58,24 @@ export default function GeoTable() {
 
     setRows(updatedRows)
   }
-  // Llamada al backend para persistir los cambios hechos en la tabla
+  function addColumn(columnName) {
+
+    const safeName = columnName.trim().toLowerCase().replace(/\s+/g, "_")
+
+    if (!safeName) return
+
+    if (rows.length && safeName in rows[0]) {
+      alert("La columna ya existe")
+      return
+    }
+
+    const updatedRows = rows.map(row => ({
+      ...row,
+      [safeName]: ""
+    }))
+
+    setRows(updatedRows)
+  }
   async function saveChanges() {
 
     const API_URL = window.location.origin.replace("3000", "5000")
@@ -125,28 +97,19 @@ export default function GeoTable() {
         setMessage("Cambios guardados correctamente")
       }
 
-    } catch (error) {
+    } catch {
       setMessage("Error al guardar los cambios")
     }
-
   }
+  const toTitleCase = (str) =>
+    str
+      .replace(/_/g, " ")
+      .replace(/\b\w/g, char => char.toUpperCase())
 
-  // Para añadir columnas a la tabla
-  function addColumn(columnName) {
+  const { filteredRows } = useGeoTable(rows, sortConfig, search)
 
-    const safeName = columnName.trim().toLowerCase().replace(/\s+/g, "_")
-    if (!safeName) return
-    if (rows.length && safeName in rows[0]) {
-      alert("La columna ya existe")
-      return
-    }
-    const updatedRows = rows.map(row => ({
-      ...row,
-      [safeName]: ""
-    }))
-
-    setRows(updatedRows)
-  }
+  const columns = getColumns(rows)
+  const lockedFields = ["id", "gid", "objectid"]
 
   return (
     <div>
@@ -190,8 +153,12 @@ export default function GeoTable() {
         Añadir campo
       </button>
 
-      <TableContainer component={Paper}>
-        <Table size="small">
+      <TableContainer component={Paper}
+        sx={{
+          maxHeight: 500,
+          overflow: "auto"
+        }}>
+        <Table size="small" stickyHeader>
 
           <TableHead>
             <TableRow>
@@ -211,7 +178,7 @@ export default function GeoTable() {
 
           <TableBody>
             {filteredRows.map((row, i) => (
-              <TableRow key={i}>
+              <TableRow key={row.gid}>
                 {columns.map(col => (
                   <TableCell key={col.key}>
                     {isAdmin && !lockedFields.includes(col.key) ? (
@@ -232,12 +199,11 @@ export default function GeoTable() {
 
         </Table>
       </TableContainer>
-      {isAdmin && (
+      {isAdmin && !isCSV && (
         <button onClick={saveChanges}>
           Guardar cambios
         </button>
       )}
-
       <button onClick={() => exportToCSV(filteredRows, columns, dataset, search)}>
         Exportar CSV
       </button>

@@ -34,8 +34,7 @@ export function normalizeData(data) {
     // GeoJSON
     if (parsed.type === "FeatureCollection") {
       return parsed.features.map(f => ({
-        ...f.properties,
-        geometry: f.geometry
+        ...f.properties
       }))
     }
 
