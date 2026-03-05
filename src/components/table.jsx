@@ -13,7 +13,7 @@ import { getColumns } from "../utils/tableColumns"
 import useGeoTable from "../hooks/useGeoTable"
 import useAutoMessage from "../hooks/useAutoMessage"
 
-export default function GeoTable() {
+export default function GeoTable({ onRowSelect, selectedFeature }) {
 
   // Para manejar la edición de la tabla, si es admin
   const isAdmin = true
@@ -177,13 +177,17 @@ export default function GeoTable() {
           </TableHead>
 
           <TableBody>
-            {filteredRows.map((row, i) => (
-              <TableRow key={row.gid}>
+            {filteredRows.map((row) => (
+              <TableRow key={row.gid}
+                onClick={() => onRowSelect(row)}
+                selected={selectedFeature?.gid === row.gid}
+              >
                 {columns.map(col => (
                   <TableCell key={col.key}>
                     {isAdmin && !lockedFields.includes(col.key) ? (
                       <input
                         value={row[col.key]}
+                        onClick={(e) => e.stopPropagation()}
                         onChange={(e) =>
                           handleCellChange(row.gid, col.key, e.target.value)
                         }
