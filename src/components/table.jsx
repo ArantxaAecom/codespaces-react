@@ -7,6 +7,7 @@ import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
 import exportToCSV from "../utils/export2CSV"
+import { normalizeData } from "../utils/dataAdapter"
 
 export default function GeoTable() {
 
@@ -60,28 +61,11 @@ export default function GeoTable() {
       .replace(/\b\w/g, char => char.toUpperCase())
 
   useEffect(() => {
-    fetch(`/${dataset}.json`)
+    fetch(`/api/${dataset}`)
       .then(res => res.json())
       .then(data => {
-
-        const tableRows = data.features
-          .filter(f => f.properties && Object.keys(f.properties).length > 0)
-          .map(f => {
-
-            const cleanedProps = {}
-
-            Object.entries(f.properties).forEach(([key, value]) => {
-              cleanedProps[key] =
-                value === null || value === undefined || value === ""
-                  ? "sin nombre"
-                  : value
-            })
-
-            return cleanedProps
-          })
-
+        const tableRows = normalizeData(data)
         setRows(tableRows)
-
       })
   }, [dataset])
 
@@ -93,11 +77,12 @@ export default function GeoTable() {
     : []
 
   // Evitar que se puedan modificar los campos "id"
-  const lockedFields = ["id", "gid", "objectid"]
-  function handleCellChange(rowIndex, columnKey, value) {
-    const updatedRows = [...rows]
-
-    updatedRows[rowIndex][columnKey] = value
+  function handleCellChange(rowId, columnKey, value) {
+    const updatedRows = rows.map(row =>
+      row.gid === rowId
+        ? { ...row, [columnKey]: value }
+        : row
+    )
 
     setRows(updatedRows)
   }
