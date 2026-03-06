@@ -12,12 +12,13 @@ import { loadDataset } from "../services/dataLoader"
 import { getColumns } from "../utils/tableColumns"
 import useGeoTable from "../hooks/useGeoTable"
 import useAutoMessage from "../hooks/useAutoMessage"
+import FileLoader from "./FileLoader.jsx"
 
 export default function GeoTable({ onRowSelect, selectedFeature }) {
 
   // Para manejar la edición de la tabla, si es admin
   const isAdmin = true
-  const [dataset, setDataset] = useState("test.json")
+  const [dataset, setDataset] = useState(null)
   const [rows, setRows] = useState([])
   const [sortConfig, setSortConfig] = useState({
     key: null,
@@ -27,12 +28,32 @@ export default function GeoTable({ onRowSelect, selectedFeature }) {
   const [newColumn, setNewColumn] = useState("")
   // mensaje de guardado con éxito y pedir exportar
   const [message, setMessage] = useState("")
-  const isCSV = dataset.endsWith(".csv")
+  const isCSV =
+    typeof dataset === "string" && dataset.endsWith(".csv")
+
+  // llamar a la api para ver tablas dinámicas
+  const API_URL = "http://localhost:5000/api"
+  const [tables, setTables] = useState([])
+
+  useEffect(() => {
+
+    fetch(`${API_URL}/tables`)
+      .then(res => res.json())
+      .then(data => {
+        console.log("tables API:", data)
+        setTables(data.tables)
+      })
+
+  }, [])
 
   useAutoMessage(message, setMessage)
 
   useEffect(() => {
-    loadDataset(dataset).then(setRows)
+    if (!dataset) return
+    loadDataset(dataset).then(data => {
+      setRows(data)
+      onRowSelect?.(null)
+    })
   }, [dataset])
 
   const handleSort = (columnKey) => {
@@ -51,7 +72,7 @@ export default function GeoTable({ onRowSelect, selectedFeature }) {
   function handleCellChange(rowId, columnKey, value) {
 
     const updatedRows = rows.map(row =>
-      row.gid === rowId
+      row.id === rowId
         ? { ...row, [columnKey]: value }
         : row
     )
@@ -113,7 +134,8 @@ export default function GeoTable({ onRowSelect, selectedFeature }) {
 
   return (
     <div>
-
+      <FileLoader onFileLoad={setDataset} />
+      {/* 
       <select
         value={dataset}
         onChange={(e) => setDataset(e.target.value)}
@@ -122,6 +144,20 @@ export default function GeoTable({ onRowSelect, selectedFeature }) {
         <option value="streets.json">Calles</option>
         <option value="stations.json">Estaciones</option>
         <option value="streets_2026-03-05.csv">Calles CSV export</option>
+      </select>*/}
+
+      <select value={dataset?.table || ""}
+        onChange={(e) =>
+          setDataset({ type: "api", table: e.target.value })
+      }>
+        <option value="">Selecciona tabla</option>
+
+      {tables.map(t => (
+        <option key={t.name} value={t.name}>
+          {t.name}
+        </option>
+      ))}
+
       </select>
 
       {isCSV && (
@@ -178,18 +214,18 @@ export default function GeoTable({ onRowSelect, selectedFeature }) {
 
           <TableBody>
             {filteredRows.map((row) => (
-              <TableRow key={row.gid}
+              <TableRow key={row.id}
                 onClick={() => onRowSelect(row)}
-                selected={selectedFeature?.gid === row.gid}
+                selected={selectedFeature?.id === row.id}
               >
                 {columns.map(col => (
                   <TableCell key={col.key}>
                     {isAdmin && !lockedFields.includes(col.key) ? (
                       <input
-                        value={row[col.key]}
+                        value={row[col.key] ?? ""}
                         onClick={(e) => e.stopPropagation()}
                         onChange={(e) =>
-                          handleCellChange(row.gid, col.key, e.target.value)
+                          handleCellChange(row.id, col.key, e.target.value)
                         }
                       />
                     ) : (

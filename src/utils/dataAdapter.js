@@ -22,14 +22,35 @@ function parseCSV(text) {
 
 export function normalizeData(data) {
 
-  if (data.startsWith("<!DOCTYPE")) {
+  if (typeof data === "string" && data.startsWith("<!DOCTYPE")) {
     console.error("Se ha recibido HTML en vez de datos")
     return []
   }
 
   try {
 
-    const parsed = JSON.parse(data)
+    const parsed = typeof data === "string"
+    ? JSON.parse(data)
+    : data
+
+    // APIs típicas
+    if (parsed.data) return parsed.data
+    if (parsed.rows) return parsed.rows
+    if (parsed.records) {
+      if (parsed.records) {
+        return parsed.records.map((r, i) => {
+
+          const { properties, ...rest } = r
+
+          return {
+            id: r.id ?? r.gid ?? i,
+            ...rest,
+            ...(properties || {})
+          }
+        })
+      }
+      return parsed.records
+    }
 
     // GeoJSON
     if (parsed.type === "FeatureCollection") {
@@ -44,7 +65,9 @@ export function normalizeData(data) {
     }
 
   } catch {
-    return parseCSV(data)
+    if (typeof data === "string") {
+      return parseCSV(data)
+    }
   }
 
   return []
